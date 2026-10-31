@@ -10,31 +10,31 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - uses: android-actions/setup-android@v3
-      - name: Extract ZIP and Build
+      - name: Build APK
         run: |
-          sudo apt-get update && sudo apt-get install -y unzip
           unzip -o weatherglass-tv-main.zip
-          # Masuk ke folder hasil extract (biasanya weatherglass-tv-main)
-          cd weatherglass-tv-main || cd weatherglass-tv-main-main || true
-          ls -lh
+          mv weatherglass-tv-main/* . || true
+          mv weatherglass-tv-main/.* . 2>/dev/null || true
+          rm -rf weatherglass-tv-main weatherglass-tv-main.zip
           chmod +x build.sh
+          # Fix API 21 buat Akari AX512
           sed -i 's/--min-sdk-version 28/--min-sdk-version 21/g' build.sh
           sed -i 's/--target-sdk-version 33/--target-sdk-version 28/g' build.sh
           sed -i 's/--min-api 28/--min-api 21/g' build.sh
           
-          echo "city=Bekasi Timur
+          cat > config.properties <<EOF
+          city=Bekasi Timur
           latitude=-6.2383
           longitude=107.0356
           language=id
           temperature=celsius
           prayer_times=true
-          weather_wallpaper=true" > config.properties
+          weather_wallpaper=true
+          EOF
           
           ./build.sh
-          cp *.apk ../ || true
-          cd ..
           ls -lh *.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: APK-Akari-AX512-Bekasi
+          name: APK-Akari-Bekasi-Timur
           path: "*.apk"
