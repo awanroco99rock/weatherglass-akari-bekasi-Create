@@ -7,34 +7,22 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
+          distribution: temurin
           java-version: '17'
-          distribution: 'temurin'
-      - uses: android-actions/setup-android@v3
-      - name: Build APK
+      - name: Build
         run: |
           unzip -o weatherglass-tv-main.zip
-          mv weatherglass-tv-main/* . || true
-          mv weatherglass-tv-main/.* . 2>/dev/null || true
-          rm -rf weatherglass-tv-main weatherglass-tv-main.zip
+          cp -r weatherglass-tv-main/* . || true
           chmod +x build.sh
-          # Fix API 21 buat Akari AX512
-          sed -i 's/--min-sdk-version 28/--min-sdk-version 21/g' build.sh
-          sed -i 's/--target-sdk-version 33/--target-sdk-version 28/g' build.sh
-          sed -i 's/--min-api 28/--min-api 21/g' build.sh
-          
-          cat > config.properties <<EOF
-          city=Bekasi Timur
+          echo "city=Bekasi Timur
           latitude=-6.2383
           longitude=107.0356
           language=id
           temperature=celsius
-          prayer_times=true
-          weather_wallpaper=true
-          EOF
-          
+          prayer_times=true" > config.properties
           ./build.sh
           ls -lh *.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: APK-Akari-Bekasi-Timur
+          name: APK-Bekasi-Timur-OS10
           path: "*.apk"
