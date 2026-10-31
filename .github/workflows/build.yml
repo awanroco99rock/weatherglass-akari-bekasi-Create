@@ -12,7 +12,7 @@ jobs:
       - name: Build
         run: |
           unzip -o weatherglass-tv-main.zip
-          cp -r weatherglass-tv-main/* . || true
+          cd weatherglass-tv-main
           chmod +x build.sh
           echo "city=Bekasi Timur
           latitude=-6.2383
@@ -25,4 +25,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: APK-Bekasi-Timur-OS10
-          path: "*.apk"
+          path: weatherglass-tv-main/*.apk
